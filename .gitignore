@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+python_env/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs (generated data)
+outputs/
+
+# Standalone distribution (1GB+ python_env)
+dist_standalone/
+
+# PyInstaller generated
+*.spec
+
+# Frontend build artifacts
+frontend/dist/
+
+# Byte-compiled
+*.pyc
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.*
+
+# Claude Code
+.claude/
