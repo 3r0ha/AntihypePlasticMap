@@ -81,34 +81,39 @@ echo.
 
 set /p choice="Введите номер (1-5) и нажмите Enter: "
 
-if "%choice%"=="1" (
-    echo Запуск Full (Streamlit)...
-    :: Фикс запуска streamlit под embedded python
-    "%PYTHON_EXE%" -c "import sys; from streamlit.web import cli; sys.exit(cli.main())" run apps\streamlit_app.py
-    echo [Программа завершила работу]
-    pause
-    goto menu
-) else if "%choice%"=="2" (
-    echo Запуск Lite Web...
-    "%PYTHON_EXE%" apps\lite_web.py
-    echo [Программа завершила работу]
-    pause
-    goto menu
-) else if "%choice%"=="3" (
-    echo Запуск Lite GUI...
-    "%PYTHON_EXE%" apps\lite_gui.py
-    echo [Программа завершила работу]
-    pause
-    goto menu
-) else if "%choice%"=="4" (
-    echo Запуск API...
-    "%PYTHON_EXE%" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
-    echo [Программа завершила работу]
-    pause
-    goto menu
-) else if "%choice%"=="5" (
-    exit /b 0
-) else (
-    echo Неверный выбор!
-    goto menu
-)
+if "%choice%"=="1" goto run_full
+if "%choice%"=="2" goto run_lite_web
+if "%choice%"=="3" goto run_lite_gui
+if "%choice%"=="4" goto run_api
+if "%choice%"=="5" exit /b 0
+
+echo Неверный выбор!
+goto menu
+
+:run_full
+echo Запуск Full (Streamlit)...
+"%PYTHON_EXE%" apps\streamlit_runner.py
+echo [Программа завершила работу]
+pause
+goto menu
+
+:run_lite_web
+echo Запуск Lite Web...
+"%PYTHON_EXE%" apps\lite_web.py
+echo [Программа завершила работу]
+pause
+goto menu
+
+:run_lite_gui
+echo Запуск Lite GUI...
+"%PYTHON_EXE%" apps\lite_gui.py
+echo [Программа завершила работу]
+pause
+goto menu
+
+:run_api
+echo Запуск API...
+"%PYTHON_EXE%" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
+echo [Программа завершила работу]
+pause
+goto menu
