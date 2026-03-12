@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 echo "===================================================="
 echo "       ECOHACK: АВТОМАТИЧЕСКИЙ ЗАПУСК"
 echo "===================================================="
 echo ""
 
-# Используем Miniconda для изоляции и переносимости без админ прав
-CONDA_DIR="$(pwd)/miniconda"
+# Используем Miniconda для изоляции
+CONDA_DIR="$(pwd)/launchers/miniconda"
 CONDA_EXE="$CONDA_DIR/bin/conda"
 PYTHON_EXE="$CONDA_DIR/bin/python"
 
@@ -32,8 +32,8 @@ if [ ! -f "$PYTHON_EXE" ]; then
         fi
     fi
 
-    curl -o miniconda.sh "https://repo.anaconda.com/miniconda/$INSTALLER"
-    bash miniconda.sh -b -p "$CONDA_DIR"
+    curl -L -o miniconda.sh "https://repo.anaconda.com/miniconda/$INSTALLER"
+    bash miniconda.sh -b -u -p "$CONDA_DIR"
     rm miniconda.sh
 else
     echo "[OK] Переносной Python уже установлен."
@@ -41,13 +41,14 @@ fi
 
 echo "[2/4] Проверка зависимостей..."
 if [ ! -f "$CONDA_DIR/.installed_reqs" ]; then
-    echo "Устанавливаем библиотеки (это займет несколько минут)..."
+    echo "Устанавливаем библиотеки (это займет несколько минут, не закрывайте окно!)..."
     "$PYTHON_EXE" -m pip install -r requirements.txt
     
     if [ $? -eq 0 ]; then
         touch "$CONDA_DIR/.installed_reqs"
+        echo "[OK] Зависимости успешно установлены."
     else
-        echo "[ОШИБКА] Не удалось установить зависимости."
+        echo "[ОШИБКА] Не удалось установить зависимости. Попробуйте еще раз."
         exit 1
     fi
 else

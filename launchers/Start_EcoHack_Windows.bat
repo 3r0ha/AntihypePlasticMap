@@ -1,11 +1,13 @@
 @echo off
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 title EcoHack Portable Launcher
 
-cd /d "%~dp0"
+:: Переходим в папку самого проекта (на уровень выше, так как батник в папке launchers)
+cd /d "%~dp0.."
 
 :: Папка для портативного питона
-set "PYTHON_DIR=%cd%\python_portable"
+set "PYTHON_DIR=%cd%\launchers\python_portable"
 set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
 set "PIP_EXE=%PYTHON_DIR%\Scripts\pip.exe"
 set "PYTHON_URL=https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip"
@@ -17,7 +19,13 @@ echo ====================================================
 echo.
 
 if exist "%PYTHON_EXE%" (
-    echo [OK] Портативный Python уже установлен.
+    echo [OK] Портативный Python найден.
+    
+    :: Проверка, успел ли установиться pip перед тем как закрыли окно
+    if not exist "%PYTHON_DIR%\Scripts\pip.exe" (
+        echo [!] Замечена незавершенная установка Python. Восстановление...
+        goto setup_pip
+    )
     goto check_reqs
 )
 
@@ -34,8 +42,8 @@ echo [2/4] Распаковка Python...
 powershell -Command "Expand-Archive -Path 'python.zip' -DestinationPath '%PYTHON_DIR%' -Force"
 del "python.zip"
 
-echo [3/4] Настройка Pip...
-:: В embed версии питона по умолчанию pip отключен. Надо раскомментировать import site
+:setup_pip
+echo [3/4] Настройка среды и PIP...
 set "PTH_FILE=%PYTHON_DIR%\python310._pth"
 powershell -Command "(Get-Content '%PTH_FILE%') -replace '#import site', 'import site' | Set-Content '%PTH_FILE%'"
 
@@ -46,14 +54,15 @@ del "get-pip.py"
 :check_reqs
 echo [4/4] Проверка и установка зависимостей...
 if not exist "%PYTHON_DIR%\.installed_reqs" (
-    echo Устанавливаем библиотеки (это займет несколько минут)...
+    echo Устанавливаем библиотеки (это займет несколько минут, не закрывайте окно!)...
     "%PYTHON_EXE%" -m pip install -r requirements.txt
     if !errorlevel! neq 0 (
-        echo [ОШИБКА] Не удалось установить зависимости.
+        echo [ОШИБКА] Не удалось установить зависимости. Попробуйте еще раз.
         pause
         exit /b 1
     )
     echo done > "%PYTHON_DIR%\.installed_reqs"
+    echo [OK] Зависимости успешно установлены.
 ) else (
     echo [OK] Зависимости уже установлены.
 )
