@@ -5,7 +5,7 @@ Primary index: FDI (Biermann et al. 2020) — FDI = R(NIR) - R'(NIR)
 Also: FAI (Hu 2009), PI (Kikaki 2020), NDVI, NDWI (McFeeters 1996).
 
 Detection mask layers: SCL water + NDWI > 0, land exclusion, sun glint filter,
-FDI > adaptive threshold (Otsu/mean+3sigma), NDVI band, NIR/SWIR caps,
+FDI > adaptive threshold (Otsu/mean+1.5sigma), NDVI band, NIR/SWIR caps,
 morphological opening.
 
 References:
@@ -229,11 +229,11 @@ def _otsu_threshold(values: np.ndarray) -> float:
 def compute_adaptive_fdi_threshold(
     fdi: xr.DataArray,
     water_mask: xr.DataArray,
-    n_sigma: float = 3.0,
+    n_sigma: float = 1.5,
     floor: float = FDI_PLASTIC_THRESHOLD,
 ) -> float:
     """
-    Hybrid adaptive threshold: max(Otsu, mean+3sigma, floor).
+    Hybrid adaptive threshold: max(Otsu, mean+1.5sigma, floor).
     Operates on FDI values over confirmed water pixels.
     """
     fdi_water = fdi.where(water_mask).values.ravel()
@@ -262,7 +262,7 @@ def compute_adaptive_fdi_threshold(
 
     logger.info(
         f"Adaptive FDI threshold: mean={mean_fdi:.5f}, std={std_fdi:.5f}, "
-        f"mean+3σ={sigma_threshold:.5f}, otsu={otsu:.5f}, final={threshold:.5f}"
+        f"mean+1.5σ={sigma_threshold:.5f}, otsu={otsu:.5f}, final={threshold:.5f}"
     )
     return threshold
 

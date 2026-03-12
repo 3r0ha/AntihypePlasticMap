@@ -38,15 +38,15 @@ MAX_CLOUD_COVER = 90
 TARGET_RESOLUTION = int(os.environ.get("ECOHACK_RESOLUTION", 200))
 
 # Biermann 2020: 0.02–0.06 for confirmed debris; we use adaptive with floor
-FDI_PLASTIC_THRESHOLD = 0.015
-FDI_ABSOLUTE_FLOOR = 0.005
+FDI_PLASTIC_THRESHOLD = 0.005  # Снижен с 0.015
+FDI_ABSOLUTE_FLOOR = 0.001  # Снижен с 0.005
 NDWI_WATER_THRESHOLD = 0.0
-NDVI_MAX_THRESHOLD = 0.2
+NDVI_MAX_THRESHOLD = 0.4  # Увеличен допуск на слабую растительность (с 0.2)
 NDVI_MIN_THRESHOLD = -0.1
-NIR_MAX_REFLECTANCE = 0.3
+NIR_MAX_REFLECTANCE = 0.5  # Увеличен допуск на яркие отражения (с 0.3)
 SWIR_MAX_REFLECTANCE = 0.25
-PI_PLASTIC_THRESHOLD = 0.48
-MIN_CLUSTER_PIXELS = 3
+PI_PLASTIC_THRESHOLD = 0.30  # Снижен с 0.48
+MIN_CLUSTER_PIXELS = 1  # Захват даже самых мелких одиночных пикселей
 
 COLORMAP_WATER = "#0a1628"
 COLORMAP_LOW = "#ffffb2"
