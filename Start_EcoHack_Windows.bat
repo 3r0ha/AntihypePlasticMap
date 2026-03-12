@@ -83,22 +83,27 @@ set /p choice="Введите номер (1-5) и нажмите Enter: "
 
 if "%choice%"=="1" (
     echo Запуск Full (Streamlit)...
-    "%PYTHON_EXE%" -m streamlit run apps\streamlit_app.py
+    :: Фикс запуска streamlit под embedded python
+    "%PYTHON_EXE%" -c "import sys; from streamlit.web import cli; sys.exit(cli.main())" run apps\streamlit_app.py
+    echo [Программа завершила работу]
     pause
     goto menu
 ) else if "%choice%"=="2" (
     echo Запуск Lite Web...
     "%PYTHON_EXE%" apps\lite_web.py
+    echo [Программа завершила работу]
     pause
     goto menu
 ) else if "%choice%"=="3" (
     echo Запуск Lite GUI...
     "%PYTHON_EXE%" apps\lite_gui.py
+    echo [Программа завершила работу]
     pause
     goto menu
 ) else if "%choice%"=="4" (
     echo Запуск API...
     "%PYTHON_EXE%" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
+    echo [Программа завершила работу]
     pause
     goto menu
 ) else if "%choice%"=="5" (

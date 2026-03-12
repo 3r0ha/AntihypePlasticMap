@@ -72,7 +72,7 @@ while true; do
     case $choice in
         1)
             echo "Запуск Full (Streamlit)..."
-            "$PYTHON_EXE" -m streamlit run apps/streamlit_app.py
+            "$PYTHON_EXE" -c "import sys; from streamlit.web import cli; sys.exit(cli.main())" run apps/streamlit_app.py
             read -p "Нажмите Enter для продолжения..."
             ;;
         2)
