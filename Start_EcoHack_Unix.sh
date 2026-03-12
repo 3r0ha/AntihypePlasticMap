@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")"
 
 echo "===================================================="
 echo "       ECOHACK: АВТОМАТИЧЕСКИЙ ЗАПУСК"
@@ -9,7 +9,7 @@ echo "===================================================="
 echo ""
 
 # Используем Miniconda для изоляции
-CONDA_DIR="$(pwd)/launchers/miniconda"
+CONDA_DIR="$(pwd)/miniconda"
 CONDA_EXE="$CONDA_DIR/bin/conda"
 PYTHON_EXE="$CONDA_DIR/bin/python"
 
@@ -55,36 +55,47 @@ else
     echo "[OK] Зависимости уже установлены."
 fi
 
-echo ""
-echo "===================================================="
-echo "ВСЕ ГОТОВО! КАКОЕ ПРИЛОЖЕНИЕ ХОТИТЕ ЗАПУСТИТЬ?"
-echo "===================================================="
-echo "1 - EcoHack Full (Полноценный Streamlit интерфейс)"
-echo "2 - EcoHack Lite Web (Облегченная веб-версия)"
-echo "3 - EcoHack Lite GUI (Оконное приложение)"
-echo "4 - EcoHack API (Только сервер)"
-echo ""
+while true; do
+    echo ""
+    echo "===================================================="
+    echo "ВСЕ ГОТОВО! КАКОЕ ПРИЛОЖЕНИЕ ХОТИТЕ ЗАПУСТИТЬ?"
+    echo "===================================================="
+    echo "1 - EcoHack Full (Полноценный Streamlit интерфейс)"
+    echo "2 - EcoHack Lite Web (Облегченная веб-версия)"
+    echo "3 - EcoHack Lite GUI (Оконное приложение)"
+    echo "4 - EcoHack API (Только сервер)"
+    echo "5 - Выход"
+    echo ""
 
-read -p "Введите номер (1-4) и нажмите Enter: " choice
+    read -p "Введите номер (1-5) и нажмите Enter: " choice
 
-case $choice in
-    1)
-        echo "Запуск Full (Streamlit)..."
-        "$PYTHON_EXE" -m streamlit run apps/streamlit_app.py
-        ;;
-    2)
-        echo "Запуск Lite Web..."
-        "$PYTHON_EXE" apps/lite_web.py
-        ;;
-    3)
-        echo "Запуск Lite GUI..."
-        "$PYTHON_EXE" apps/lite_gui.py
-        ;;
-    4)
-        echo "Запуск API..."
-        "$PYTHON_EXE" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
-        ;;
-    *)
-        echo "Неверный выбор!"
-        ;;
-esac
+    case $choice in
+        1)
+            echo "Запуск Full (Streamlit)..."
+            "$PYTHON_EXE" -m streamlit run apps/streamlit_app.py
+            read -p "Нажмите Enter для продолжения..."
+            ;;
+        2)
+            echo "Запуск Lite Web..."
+            "$PYTHON_EXE" apps/lite_web.py
+            read -p "Нажмите Enter для продолжения..."
+            ;;
+        3)
+            echo "Запуск Lite GUI..."
+            "$PYTHON_EXE" apps/lite_gui.py
+            read -p "Нажмите Enter для продолжения..."
+            ;;
+        4)
+            echo "Запуск API..."
+            "$PYTHON_EXE" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
+            read -p "Нажмите Enter для продолжения..."
+            ;;
+        5)
+            echo "Выход..."
+            exit 0
+            ;;
+        *)
+            echo "Неверный выбор!"
+            ;;
+    esac
+done

@@ -3,11 +3,11 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 title EcoHack Portable Launcher
 
-:: Переходим в папку самого проекта (на уровень выше, так как батник в папке launchers)
-cd /d "%~dp0.."
+:: Переходим в папку проекта
+cd /d "%~dp0"
 
 :: Папка для портативного питона
-set "PYTHON_DIR=%cd%\launchers\python_portable"
+set "PYTHON_DIR=%cd%\python_portable"
 set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
 set "PIP_EXE=%PYTHON_DIR%\Scripts\pip.exe"
 set "PYTHON_URL=https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip"
@@ -21,7 +21,7 @@ echo.
 if exist "%PYTHON_EXE%" (
     echo [OK] Портативный Python найден.
     
-    :: Проверка, успел ли установиться pip перед тем как закрыли окно
+    REM Проверка, успел ли установиться pip
     if not exist "%PYTHON_DIR%\Scripts\pip.exe" (
         echo [!] Замечена незавершенная установка Python. Восстановление...
         goto setup_pip
@@ -54,7 +54,7 @@ del "get-pip.py"
 :check_reqs
 echo [4/4] Проверка и установка зависимостей...
 if not exist "%PYTHON_DIR%\.installed_reqs" (
-    echo Устанавливаем библиотеки (это займет несколько минут, не закрывайте окно!)...
+    echo Устанавливаем библиотеки ^(это займет несколько минут, не закрывайте окно!^)...
     "%PYTHON_EXE%" -m pip install -r requirements.txt
     if !errorlevel! neq 0 (
         echo [ОШИБКА] Не удалось установить зависимости. Попробуйте еще раз.
@@ -67,6 +67,7 @@ if not exist "%PYTHON_DIR%\.installed_reqs" (
     echo [OK] Зависимости уже установлены.
 )
 
+:menu
 echo.
 echo ====================================================
 echo ВСЕ ГОТОВО! КАКОЕ ПРИЛОЖЕНИЕ ХОТИТЕ ЗАПУСТИТЬ?
@@ -75,25 +76,34 @@ echo 1 - EcoHack Full (Полноценный Streamlit интерфейс)
 echo 2 - EcoHack Lite Web (Облегченная веб-версия)
 echo 3 - EcoHack Lite GUI (Оконное приложение)
 echo 4 - EcoHack API (Только сервер)
+echo 5 - Выход
 echo.
 
-set /p choice="Введите номер (1-4) и нажмите Enter: "
+set /p choice="Введите номер (1-5) и нажмите Enter: "
 
 if "%choice%"=="1" (
     echo Запуск Full (Streamlit)...
     "%PYTHON_EXE%" -m streamlit run apps\streamlit_app.py
+    pause
+    goto menu
 ) else if "%choice%"=="2" (
     echo Запуск Lite Web...
     "%PYTHON_EXE%" apps\lite_web.py
+    pause
+    goto menu
 ) else if "%choice%"=="3" (
     echo Запуск Lite GUI...
     "%PYTHON_EXE%" apps\lite_gui.py
+    pause
+    goto menu
 ) else if "%choice%"=="4" (
     echo Запуск API...
     "%PYTHON_EXE%" -m uvicorn apps.api:app --host 127.0.0.1 --port 8000
+    pause
+    goto menu
+) else if "%choice%"=="5" (
+    exit /b 0
 ) else (
     echo Неверный выбор!
-    pause
+    goto menu
 )
-
-pause
